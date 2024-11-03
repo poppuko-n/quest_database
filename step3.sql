@@ -77,13 +77,13 @@ LEFT JOIN episode_total_view AS etv
 ),
 -- ウィンドウ関数を共通テーブルで表示
 rank_program AS (
-   SELECT pg.genre_id, pav.program_title, RANK() OVER(PARTITION BY pg.genre_id ORDER BY pav.program_avg_view DESC) AS program_rank
+   SELECT pg.genre_id, pav.program_title,pav.program_avg_view, RANK() OVER(PARTITION BY pg.genre_id ORDER BY pav.program_avg_view DESC) AS program_rank
      FROM programs_genres AS pg
 LEFT JOIN program_avg_view AS pav
        ON pg.program_id = pav.id
 )
 
-   SELECT genre_id, program_title
+   SELECT genre_id AS "ジャンル名", program_title AS '番組タイトル', program_avg_view AS 'エピソード平均視聴数'
      FROM rank_program
     WHERE program_rank = 1;
 
